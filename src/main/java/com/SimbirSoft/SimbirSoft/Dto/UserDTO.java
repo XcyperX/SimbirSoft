@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class UserDTO implements Serializable {
     @JsonProperty("user_id")
     private Long id;
 
+    @NotNull
     private String login;
 
     private String password;

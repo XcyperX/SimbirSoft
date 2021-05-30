@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="inbox_chat">
-                    <div class="chat_list">
+                    <div class="chat_list" onclick="loadingRoomById()">
                         <div class="chat_people">
                             <div class="chat_ib">
                                 <h5>Бот <span class="chat_date">Вечность</span></h5>
@@ -58,11 +58,7 @@
                 <div class="type_msg">
                     <div class="input_msg_write">
                         <input type="text" class="write_msg" id="write_msg" placeholder="Введите сообщение" />
-                        <#if bot>
-                        <button class="msg_send_btn" type="button" onclick="sendCommand()"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-                        <#else>
                         <button class="msg_send_btn" type="button" onclick="sendNewMessage(<#if roomId?has_content && user?has_content>${roomId}, ${user.id}</#if>)"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-                        </#if>
                     </div>
                 </div>
             </div>

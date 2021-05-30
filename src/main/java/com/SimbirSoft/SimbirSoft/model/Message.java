@@ -35,10 +35,12 @@ public class Message implements Serializable {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "Position{" +
-                "id=" + id +
-                '}';
+    public Message(String text) {
+        this.text = text;
+    }
+
+    public Message(Long id, String text) {
+        this.id = id;
+        this.text = text;
     }
 }

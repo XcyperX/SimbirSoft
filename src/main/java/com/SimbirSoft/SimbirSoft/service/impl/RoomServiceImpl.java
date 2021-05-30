@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,7 +61,19 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDTO> findAllByUserId(Long id) {
-        return mapperFacade.mapAsList(roomRepository.findAllByUserId(id), RoomDTO.class);
+        List<Room> rooms = new ArrayList<>();
+        roomRepository.findAll().forEach(room -> {
+            if (room.getUser().getId().equals(id)) {
+                rooms.add(room);
+            } else {
+                room.getUsers().forEach(user -> {
+                    if (user.getId().equals(id)) {
+                        rooms.add(room);
+                    }
+                });
+            }
+        });
+        return mapperFacade.mapAsList(rooms, RoomDTO.class);
     }
 
     @Override

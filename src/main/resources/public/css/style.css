@@ -130,8 +130,8 @@ img{ max-width:100%;}
   font-size: 17px;
   height: 33px;
   position: absolute;
-  right: 0;
-  top: 11px;
+  right: 10px;
+  top: 8px;
   width: 33px;
 }
 .messaging { padding: 0 0 50px 0;}

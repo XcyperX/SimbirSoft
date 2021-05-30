@@ -318,5 +318,10 @@ updateEmployeeVacationById = (employee_id) => {
 }
 
 loadingRoomById = (roomId) => {
-    document.location.href = "http://localhost:8080/main/rooms/" + roomId;
+    if (roomId != null) {
+        document.location.href = "http://localhost:8080/main/rooms/" + roomId;
+    } else {
+        document.location.href = "http://localhost:8080/main";
+    }
+
 }

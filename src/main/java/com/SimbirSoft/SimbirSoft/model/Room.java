@@ -38,10 +38,12 @@ public class Room implements Serializable {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "Position{" +
-                "id=" + id +
-                '}';
+    public Room(String name) {
+        this.name = name;
+    }
+
+    public Room(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }

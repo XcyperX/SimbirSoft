@@ -1,6 +1,6 @@
 package com.SimbirSoft.SimbirSoft.config;
 
-import com.SimbirSoft.SimbirSoft.service.impl.UserDetailsServiceImpl;
+import com.SimbirSoft.SimbirSoft.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
