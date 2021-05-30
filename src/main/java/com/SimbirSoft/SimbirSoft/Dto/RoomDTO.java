@@ -1,13 +1,9 @@
 package com.SimbirSoft.SimbirSoft.Dto;
 
-import com.SimbirSoft.SimbirSoft.model.Message;
-import com.SimbirSoft.SimbirSoft.model.Room;
-import com.SimbirSoft.SimbirSoft.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

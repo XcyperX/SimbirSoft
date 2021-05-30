@@ -7,7 +7,6 @@ import com.SimbirSoft.SimbirSoft.model.Message;
 import com.SimbirSoft.SimbirSoft.model.User;
 import com.SimbirSoft.SimbirSoft.repository.MessageRepository;
 import com.SimbirSoft.SimbirSoft.repository.RoomRepository;
-import com.SimbirSoft.SimbirSoft.repository.UserRepository;
 import com.SimbirSoft.SimbirSoft.security.SecurityUtils;
 import com.SimbirSoft.SimbirSoft.service.MessageService;
 import com.SimbirSoft.SimbirSoft.service.RoomService;

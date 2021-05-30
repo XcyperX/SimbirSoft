@@ -1,11 +1,7 @@
 package com.SimbirSoft.SimbirSoft;
 
 import com.SimbirSoft.SimbirSoft.Dto.UserDTO;
-import com.SimbirSoft.SimbirSoft.model.Role;
-import com.SimbirSoft.SimbirSoft.model.User;
-import com.SimbirSoft.SimbirSoft.repository.UserRepository;
 import com.SimbirSoft.SimbirSoft.service.UserService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;

@@ -1,7 +1,6 @@
 package com.SimbirSoft.SimbirSoft.persistence.service;
 
 import com.SimbirSoft.SimbirSoft.Dto.UserDTO;
-import com.SimbirSoft.SimbirSoft.model.User;
 import com.SimbirSoft.SimbirSoft.service.UserService;
 import config.H2JpaConfig;
 import org.junit.Test;

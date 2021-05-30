@@ -1,12 +1,9 @@
 package com.SimbirSoft.SimbirSoft.service.impl;
 
 import com.SimbirSoft.SimbirSoft.Dto.RoomDTO;
-import com.SimbirSoft.SimbirSoft.Dto.RoomDTO;
 import com.SimbirSoft.SimbirSoft.model.Room;
 import com.SimbirSoft.SimbirSoft.repository.RoomRepository;
-import com.SimbirSoft.SimbirSoft.repository.UserRepository;
 import com.SimbirSoft.SimbirSoft.service.RoomService;
-import com.SimbirSoft.SimbirSoft.service.UserService;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;

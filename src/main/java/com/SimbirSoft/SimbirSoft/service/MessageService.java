@@ -1,11 +1,7 @@
 package com.SimbirSoft.SimbirSoft.service;
 
-
-
 import com.SimbirSoft.SimbirSoft.Dto.MessageDTO;
-import com.SimbirSoft.SimbirSoft.Dto.RoomDTO;
 import com.SimbirSoft.SimbirSoft.base.CRUDService;
-import com.SimbirSoft.SimbirSoft.model.User;
 
 import java.util.List;
 
