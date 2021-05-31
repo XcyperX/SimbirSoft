@@ -90,23 +90,53 @@ public class MessageServiceImpl implements MessageService {
         if (userFromContext != null)
         switch (commands[0]) {
             case (ROOM):
-                switch (commands[1]) {
-                    case (CREATE):
-                            createRoomCommand(commands, userFromContext);
-                        break;
-                    case (REMOVE):
-                            removeRoomCommand(commands, userFromContext);
-                        break;
-                    case (RENAME):
-                            renameRoomCommand(commands, messageDTO);
-                        break;
-                    case (CONNECT):
-                        connectRoomCommand(commands, messageDTO);
-                        break;
-                    case (DISCONNECT):
-                        disconnectRoomCommand(commands, messageDTO);
-                        break;
-                }
+                roomActions(commands, messageDTO, userFromContext);
+                break;
+            case (USER):
+                userActions(commands, messageDTO, userFromContext);
+                break;
+            case (YBOT):
+                yBotActions(commands, messageDTO, userFromContext);
+                break;
+        }
+    }
+
+    private void roomActions(String[] commands, MessageDTO messageDTO, User userFromContext) {
+        switch (commands[1]) {
+            case (CREATE):
+                createRoomCommand(commands, userFromContext);
+                break;
+            case (REMOVE):
+                removeRoomCommand(commands, userFromContext);
+                break;
+            case (RENAME):
+                renameRoomCommand(commands, messageDTO);
+                break;
+            case (CONNECT):
+                connectRoomCommand(commands, messageDTO);
+                break;
+            case (DISCONNECT):
+                disconnectRoomCommand(commands, messageDTO);
+                break;
+        }
+    }
+
+    private void userActions(String[] commands, MessageDTO messageDTO, User userFromContext) {
+        switch (commands[1]) {
+            case (RENAME):
+                break;
+            case (BAN):
+                break;
+            case (MODERATOR):
+                break;
+        }
+    }
+
+    private void yBotActions(String[] commands, MessageDTO messageDTO, User userFromContext) {
+        switch (commands[1]) {
+            case (RENAME):
+                break;
+            case (BAN):
                 break;
         }
     }
