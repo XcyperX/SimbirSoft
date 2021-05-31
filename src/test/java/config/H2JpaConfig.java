@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 @TestConfiguration
-@EnableJpaRepositories(basePackages = "com.SimbirSoft.SimbirSoft.repository")
+@EnableJpaRepositories(basePackages = "com.simbir_soft.repository")
 @PropertySource("classpath:H2DataBase.properties")
 @EnableTransactionManagement
 public class H2JpaConfig {
@@ -40,7 +40,7 @@ public class H2JpaConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.SimbirSoft.SimbirSoft.model");
+        em.setPackagesToScan("com.simbir_soft.model");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaProperties(additionalProperties());
         return em;
