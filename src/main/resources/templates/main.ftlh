@@ -79,6 +79,9 @@
                                 <div class="chat_ib">
                                     <h5>${user.login}</h5>
                                     <p>${user.role}</p>
+                                    <#if user.endBanDate?has_content>
+                                    <p>${user.endBanDate}</p>
+                                    </#if>
                                 </div>
                             </div>
                         </div>

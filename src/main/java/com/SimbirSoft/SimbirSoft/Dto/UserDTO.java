@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,11 @@ public class UserDTO implements Serializable {
     private String password;
 
     private String role;
+
+    private Boolean ban;
+
+    @JsonProperty("end_ban_date")
+    private LocalDateTime endBanDate;
 
     private List<RoomDTO> rooms = new ArrayList<>();
 

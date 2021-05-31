@@ -4,6 +4,7 @@ import com.SimbirSoft.SimbirSoft.Dto.MessageDTO;
 import com.SimbirSoft.SimbirSoft.Dto.RoomDTO;
 import com.SimbirSoft.SimbirSoft.Dto.UserDTO;
 import com.SimbirSoft.SimbirSoft.model.Message;
+import com.SimbirSoft.SimbirSoft.model.Role;
 import com.SimbirSoft.SimbirSoft.model.User;
 import com.SimbirSoft.SimbirSoft.repository.MessageRepository;
 import com.SimbirSoft.SimbirSoft.repository.RoomRepository;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,10 +127,13 @@ public class MessageServiceImpl implements MessageService {
     private void userActions(String[] commands, MessageDTO messageDTO, User userFromContext) {
         switch (commands[1]) {
             case (RENAME):
+                renameUserCommand(commands, messageDTO, userFromContext);
                 break;
             case (BAN):
+                banUserCommand(messageDTO, userFromContext);
                 break;
             case (MODERATOR):
+                upAndDownRolesUser(commands, messageDTO, userFromContext);
                 break;
         }
     }
@@ -142,9 +148,49 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private String getLoginUserFromCommand(MessageDTO messageDTO) {
-        return messageDTO.getText().split("-l")[1].strip();
+        return messageDTO.getText().split("-l")[1].split("-m")[0].strip();
     }
 
+    private Long getMinutesBanUser(MessageDTO messageDTO) {
+        return Long.parseLong(messageDTO.getText().split("-m")[1].strip());
+    }
+
+    private Boolean checkAccessUser(MessageDTO messageDTO, User user) {
+        return roomRepository.findById(messageDTO.getRoomId()).get().getUser().getId().equals(user.getId()) ||
+                user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR);
+    }
+
+    //TODO Работа с пользователями
+    private void renameUserCommand(String[] commands, MessageDTO messageDTO, User user) {
+        if (checkAccessUser(messageDTO, user)) {
+            UserDTO updateUserDTO = userService.findByLogin(commands[2]);
+            updateUserDTO.setLogin(getLoginUserFromCommand(messageDTO));
+            userService.update(updateUserDTO);
+        }
+    }
+
+    private void banUserCommand(MessageDTO messageDTO, User user) {
+        if (checkAccessUser(messageDTO, user)) {
+            UserDTO updateUserDTO = userService.findByLogin(getLoginUserFromCommand(messageDTO));
+            updateUserDTO.setBan(true);
+            updateUserDTO.setEndBanDate(LocalDateTime.now().plusMinutes(getMinutesBanUser(messageDTO)));
+            userService.update(updateUserDTO);
+        }
+    }
+
+    private void upAndDownRolesUser(String[] commands, MessageDTO messageDTO, User user) {
+        if (checkAccessUser(messageDTO, user)) {
+            UserDTO updateUserDTO = userService.findByLogin(commands[2]);
+            if (commands[3].equals("-n")) {
+                updateUserDTO.setRole(Role.MODERATOR.name());
+            } else if (commands[3].equals("-d")) {
+                updateUserDTO.setRole(Role.USER.name());
+            }
+            userService.update(updateUserDTO);
+        }
+    }
+
+    //TODO Работа с комнатами
     private void createRoomCommand(String[] commands, User user) {
         RoomDTO roomDTO = new RoomDTO();
         roomDTO.setName(commands[2]);

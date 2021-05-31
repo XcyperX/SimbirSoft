@@ -27,34 +27,38 @@ public class MapperConfig extends ConfigurableMapper {
                         if (userDTO.getRooms() != null) {
                             List<RoomDTO> roomDTOS = new ArrayList<>();
                             userDTO.getRooms().forEach(room -> {
-                                List<UserDTO> userDTOS = new ArrayList<>();
-                                List<MessageDTO> messageDTOS = new ArrayList<>();
-                                room.getUsers().forEach(user1 -> {
-                                    UserDTO userDTO1 = new UserDTO();
-                                    userDTO1.setId(user1.getId());
-                                    userDTO1.setLogin(user1.getLogin());
-                                    userDTO1.setPassword(user1.getPassword());
-                                    userDTO1.setRooms(null);
-                                    userDTO1.setMessages(null);
-                                    userDTOS.add(userDTO1);
-                                });
-                                room.getMessages().forEach(message -> {
-                                    MessageDTO messageDTO = new MessageDTO();
-                                    messageDTO.setId(message.getId());
-                                    messageDTO.setDate(message.getDate());
-                                    messageDTO.setText(message.getText());
-                                    messageDTO.setRoomId(message.getRoomId());
-                                    messageDTO.setUserId(message.getUserId());
-                                    messageDTOS.add(messageDTO);
-                                });
-                                RoomDTO roomDTO = new RoomDTO();
-                                roomDTO.setId(room.getId());
-                                roomDTO.setUserId(room.getUserId());
-                                roomDTO.setName(room.getName());
-                                roomDTO.setPrivateMassage(room.getPrivateMassage());
-                                roomDTO.setUsers(userDTOS);
-                                roomDTO.setMessages(messageDTOS);
-                                roomDTOS.add(roomDTO);
+                                List<UserDTO> userDTOS = getUserDTO(room);
+                                List<MessageDTO> messageDTOS = getMessageDTO(room);
+                                roomDTOS.add(makeRoomDTO(room, userDTOS, messageDTOS));
+
+//                                List<UserDTO> userDTOS = new ArrayList<>();
+//                                List<MessageDTO> messageDTOS = new ArrayList<>();
+//                                room.getUsers().forEach(user1 -> {
+//                                    UserDTO userDTO1 = new UserDTO();
+//                                    userDTO1.setId(user1.getId());
+//                                    userDTO1.setLogin(user1.getLogin());
+//                                    userDTO1.setPassword(user1.getPassword());
+//                                    userDTO1.setRooms(null);
+//                                    userDTO1.setMessages(null);
+//                                    userDTOS.add(userDTO1);
+//                                });
+//                                room.getMessages().forEach(message -> {
+//                                    MessageDTO messageDTO = new MessageDTO();
+//                                    messageDTO.setId(message.getId());
+//                                    messageDTO.setDate(message.getDate());
+//                                    messageDTO.setText(message.getText());
+//                                    messageDTO.setRoomId(message.getRoomId());
+//                                    messageDTO.setUserId(message.getUserId());
+//                                    messageDTOS.add(messageDTO);
+//                                });
+//                                RoomDTO roomDTO = new RoomDTO();
+//                                roomDTO.setId(room.getId());
+//                                roomDTO.setUserId(room.getUserId());
+//                                roomDTO.setName(room.getName());
+//                                roomDTO.setPrivateMassage(room.getPrivateMassage());
+//                                roomDTO.setUsers(userDTOS);
+//                                roomDTO.setMessages(messageDTOS);
+//                                roomDTOS.add(roomDTO);
                             });
                             userDTO.setRooms(roomDTOS);
                         }
@@ -98,4 +102,42 @@ public class MapperConfig extends ConfigurableMapper {
                 .register();
     }
 
+    private List<UserDTO> getUserDTO(RoomDTO roomDTO) {
+        List<UserDTO> userDTOS = new ArrayList<>();
+        roomDTO.getUsers().forEach(user1 -> {
+            UserDTO userDTO1 = new UserDTO();
+            userDTO1.setId(user1.getId());
+            userDTO1.setLogin(user1.getLogin());
+            userDTO1.setPassword(user1.getPassword());
+            userDTO1.setRooms(null);
+            userDTO1.setMessages(null);
+            userDTOS.add(userDTO1);
+        });
+        return userDTOS;
+    }
+
+    private List<MessageDTO> getMessageDTO(RoomDTO roomDTO) {
+        List<MessageDTO> messageDTOS = new ArrayList<>();
+        roomDTO.getMessages().forEach(message -> {
+            MessageDTO messageDTO = new MessageDTO();
+            messageDTO.setId(message.getId());
+            messageDTO.setDate(message.getDate());
+            messageDTO.setText(message.getText());
+            messageDTO.setRoomId(message.getRoomId());
+            messageDTO.setUserId(message.getUserId());
+            messageDTOS.add(messageDTO);
+        });
+        return messageDTOS;
+    }
+
+    private RoomDTO makeRoomDTO(RoomDTO roomDTO, List<UserDTO> userDTOS, List<MessageDTO> messageDTOS) {
+        RoomDTO customDTO = new RoomDTO();
+        customDTO.setId(roomDTO.getId());
+        customDTO.setUserId(roomDTO.getUserId());
+        customDTO.setName(roomDTO.getName());
+        customDTO.setPrivateMassage(roomDTO.getPrivateMassage());
+        customDTO.setUsers(userDTOS);
+        customDTO.setMessages(messageDTOS);
+        return customDTO;
+    }
 }
