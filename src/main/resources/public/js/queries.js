@@ -1,7 +1,8 @@
 sendNewMessage = (roomId, userId) => {
     if (document.getElementById("write_msg").value !== "") {
         message.text = document.getElementById("write_msg").value;
-        message.user_id = userId;
+        user.user_id = userId;
+        message.user = (JSON.parse(JSON.stringify(user)));
         message.room_id = roomId;
         message.date = (new Date()).toISOString().split('T')[0];
         createNewMessage(message);
@@ -19,15 +20,11 @@ submitNewUser = (elem) => {
     createNewUser(user);
 }
 
-const command = {
-    command: null
-}
-
 const message = {
-    message_id: null,
+    id: null,
     text: null,
     date: null,
-    user_id: null,
+    user: null,
     room_id: null
 }
 
@@ -96,9 +93,9 @@ createNewMessage = (message) => {
     sendRequest('POST', '/api/message', message).then(response => {
         if (response.ok) {
             console.log(response);
-            document.location.href = "http://localhost:8080/main";
+            document.location.reload(true);
         } else {
-            console.log(response);
+            alert("Проверьте правильность запроса, либо данные названия уже заняты или не найдены")
         }
     });
 }

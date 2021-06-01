@@ -1,4 +1,4 @@
-package com.simbir_soft.Dto;
+package com.simbir_soft.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class RoomDTO implements Serializable {
     @JsonProperty("room_id")
     private Long id;
@@ -21,8 +20,4 @@ public class RoomDTO implements Serializable {
 
     @JsonProperty("user_id")
     private Long userId;
-
-    private List<UserDTO> users = new ArrayList<>();
-
-    private List<MessageDTO> messages = new ArrayList<>();
 }

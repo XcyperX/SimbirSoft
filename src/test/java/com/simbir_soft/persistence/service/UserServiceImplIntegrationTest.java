@@ -1,6 +1,5 @@
 package com.simbir_soft.persistence.service;
 
-import com.simbir_soft.Dto.UserDTO;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.UserRepository;
 import com.simbir_soft.service.UserService;
@@ -51,21 +50,21 @@ public class UserServiceImplIntegrationTest {
 
     @Test
     public void whenValidName_thenUserShouldBeFound() {
-        UserDTO found = userService.findByLogin(USER_ONE);
+        User found = userService.findByLogin(USER_ONE);
 
         assertThat(found.getLogin()).isEqualTo(USER_ONE);
     }
 
     @Test
     public void whenValidId_thenUserShouldBeFound() {
-        UserDTO found = userService.getById(ID);
+        User found = userService.getById(ID);
 
         assertThat(found.getLogin()).isEqualTo(USER_ONE);
     }
 
     @Test
     public void whenValidAllUsers_thenUserShouldBeFound() {
-        List<UserDTO> userDTOS = userService.findAll();
+        List<User> userDTOS = userService.findAll();
 
         assertThat(userDTOS.size()).isEqualTo(3);
     }
@@ -76,7 +75,7 @@ public class UserServiceImplIntegrationTest {
         User user2 = new User(USER_TWO);
         User user3 = new User(USER_THREE);
 
-        List<UserDTO> userDTOS = userService.findAll();
-        assertThat(userDTOS).hasSize(3).extracting(UserDTO::getLogin).contains(user1.getLogin(), user2.getLogin(), user3.getLogin());
+        List<User> userDTOS = userService.findAll();
+        assertThat(userDTOS).hasSize(3).extracting(User::getLogin).contains(user1.getLogin(), user2.getLogin(), user3.getLogin());
     }
 }

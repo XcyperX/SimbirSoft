@@ -1,10 +1,11 @@
 package com.simbir_soft.service;
 
-import com.simbir_soft.Dto.UserDTO;
+
+import com.simbir_soft.model.User;
 
 import java.util.List;
 
-public interface UserService extends CRUDService<UserDTO, Long> {
-    List<UserDTO> findAll();
-    UserDTO findByLogin(String login);
+public interface UserService extends CRUDService<User, Long> {
+    List<User> findAll();
+    User findByLogin(String login);
 }

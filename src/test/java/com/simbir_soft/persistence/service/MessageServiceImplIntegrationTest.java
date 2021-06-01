@@ -1,6 +1,5 @@
 package com.simbir_soft.persistence.service;
 
-import com.simbir_soft.Dto.MessageDTO;
 import com.simbir_soft.model.Message;
 import com.simbir_soft.repository.MessageRepository;
 import com.simbir_soft.service.MessageService;
@@ -48,14 +47,14 @@ public class MessageServiceImplIntegrationTest {
 
     @Test
     public void whenValidId_thenUserShouldBeFound() {
-        MessageDTO found = messageService.getById(ID);
+        Message found = messageService.getById(ID);
 
         assertThat(found.getText()).isEqualTo(MESSAGE_ONE);
     }
 
     @Test
     public void whenValidAllUsers_thenUserShouldBeFound() {
-        List<MessageDTO> userDTOS = messageService.findAll();
+        List<Message> userDTOS = messageService.findAll();
 
         assertThat(userDTOS.size()).isEqualTo(3);
     }
@@ -66,7 +65,7 @@ public class MessageServiceImplIntegrationTest {
         Message message2 = new Message(MESSAGE_TWO);
         Message message3 = new Message(MESSAGE_THREE);
 
-        List<MessageDTO> userDTOS = messageService.findAll();
-        assertThat(userDTOS).hasSize(3).extracting(MessageDTO::getText).contains(message1.getText(), message2.getText(), message3.getText());
+        List<Message> userDTOS = messageService.findAll();
+        assertThat(userDTOS).hasSize(3).extracting(Message::getText).contains(message1.getText(), message2.getText(), message3.getText());
     }
 }

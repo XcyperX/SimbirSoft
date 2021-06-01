@@ -1,10 +1,8 @@
 package com.simbir_soft.service.impl;
 
-import com.simbir_soft.Dto.MessageDTO;
-import com.simbir_soft.Dto.RoomDTO;
-import com.simbir_soft.Dto.UserDTO;
 import com.simbir_soft.model.Message;
 import com.simbir_soft.model.Role;
+import com.simbir_soft.model.Room;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.MessageRepository;
 import com.simbir_soft.repository.RoomRepository;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -41,69 +40,61 @@ public class MessageServiceImpl implements MessageService {
     private static final String RENAME = "rename";
 
     private static final String BAN = "ban";
-    private static final String MODERATOR = "moderator";
+    private static final String MODERATOR = "moderator1";
 
     private static final String FIND = "find";
     private static final String HELP = "help";
 
     @Override
-    public MessageDTO getById(Long id) {
-        if (messageRepository.findById(id).isEmpty()) {
-            throw new RuntimeException("Ошибка, нет такого сообщения!");
-        }
-        return mapperFacade.map(messageRepository.findById(id).get(), MessageDTO.class);
+    public Message getById(Long id) {
+        return messageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ошибка, нет такого сообщения!"));
     }
 
     @Override
-    public MessageDTO save(MessageDTO messageDTO) {
-        if (messageDTO != null) {
-            Message message = messageRepository.save(mapperFacade.map(messageDTO, Message.class));
-            return mapperFacade.map(message, MessageDTO.class);
+    public Message save(Message message) {
+        if (Objects.isNull(message)) {
+            throw new RuntimeException("Ошибка, сообщение пустое!");
         }
-        return null;
+        return messageRepository.save(message);
     }
 
     @Override
-    public MessageDTO update(MessageDTO messageDTO) {
-        if (messageRepository.findById(messageDTO.getId()).isEmpty()) {
-            throw new RuntimeException("Ошибка, нет такого сообщения!");
-        }
-        Message message = messageRepository.save(mapperFacade.map(messageDTO, Message.class));
-        return mapperFacade.map(message, MessageDTO.class);
+    public Message update(Message message) {
+        getById(message.getId());
+        return messageRepository.save(message);
     }
 
     @Override
     public void delete(Long id) {
-        if (messageRepository.findById(id).isEmpty()) {
-            throw new RuntimeException("Ошибка, нет такого сообщения!");
-        }
+        getById(id);
         messageRepository.deleteById(id);
     }
 
     @Override
-    public List<MessageDTO> findAll() {
-        return mapperFacade.mapAsList(messageRepository.findAll(), MessageDTO.class);
+    public List<Message> findAll() {
+        return messageRepository.findAll();
     }
 
     @Override
-    public void command(MessageDTO messageDTO) {
+    public void command(Message message) {
         User userFromContext = SecurityUtils.getUserFromContext();
-        String[] commands = messageDTO.getText().split(" ");
+        String[] commands = message.getText().split(" ");
         if (userFromContext != null)
         switch (commands[0]) {
             case (ROOM):
-                roomActions(commands, messageDTO, userFromContext);
+                roomActions(commands, message, userFromContext);
                 break;
             case (USER):
-                userActions(commands, messageDTO, userFromContext);
+                userActions(commands, message, userFromContext);
                 break;
             case (YBOT):
-                yBotActions(commands, messageDTO, userFromContext);
+                yBotActions(commands, message, userFromContext);
                 break;
         }
     }
 
-    private void roomActions(String[] commands, MessageDTO messageDTO, User userFromContext) {
+    private void roomActions(String[] commands, Message message, User userFromContext) {
         switch (commands[1]) {
             case (CREATE):
                 createRoomCommand(commands, userFromContext);
@@ -112,32 +103,32 @@ public class MessageServiceImpl implements MessageService {
                 removeRoomCommand(commands, userFromContext);
                 break;
             case (RENAME):
-                renameRoomCommand(commands, messageDTO);
+                renameRoomCommand(commands, message);
                 break;
             case (CONNECT):
-                connectRoomCommand(commands, messageDTO);
+                connectRoomCommand(commands, message);
                 break;
             case (DISCONNECT):
-                disconnectRoomCommand(commands, messageDTO);
+                disconnectRoomCommand(commands, message);
                 break;
         }
     }
 
-    private void userActions(String[] commands, MessageDTO messageDTO, User userFromContext) {
+    private void userActions(String[] commands, Message message, User userFromContext) {
         switch (commands[1]) {
             case (RENAME):
-                renameUserCommand(commands, messageDTO, userFromContext);
+                renameUserCommand(commands, message, userFromContext);
                 break;
             case (BAN):
-                banUserCommand(messageDTO, userFromContext);
+                banUserCommand(message, userFromContext);
                 break;
             case (MODERATOR):
-                upAndDownRolesUser(commands, messageDTO, userFromContext);
+                upAndDownRolesUser(commands, message, userFromContext);
                 break;
         }
     }
 
-    private void yBotActions(String[] commands, MessageDTO messageDTO, User userFromContext) {
+    private void yBotActions(String[] commands, Message message, User userFromContext) {
         switch (commands[1]) {
             case (RENAME):
                 break;
@@ -146,81 +137,81 @@ public class MessageServiceImpl implements MessageService {
         }
     }
 
-    private String getLoginUserFromCommand(MessageDTO messageDTO) {
-        return messageDTO.getText().split("-l")[1].split("-m")[0].strip();
+    private String getLoginUserFromCommand(Message message) {
+        return message.getText().split("-l")[1].split("-m")[0].strip();
     }
 
-    private Long getMinutesBanUser(MessageDTO messageDTO) {
-        return Long.parseLong(messageDTO.getText().split("-m")[1].strip());
+    private Long getMinutesBanUser(Message message) {
+        return Long.parseLong(message.getText().split("-m")[1].strip());
     }
 
-    private Boolean checkAccessUser(MessageDTO messageDTO, User user) {
-        return roomRepository.findById(messageDTO.getRoomId()).get().getUser().getId().equals(user.getId()) ||
+    private Boolean checkAccessUser(Message message, User user) {
+        return roomRepository.findById(message.getId()).get().getUser().getId().equals(user.getId()) ||
                 user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR);
     }
 
     //TODO Работа с пользователями
-    private void renameUserCommand(String[] commands, MessageDTO messageDTO, User user) {
-        if (checkAccessUser(messageDTO, user)) {
-            UserDTO updateUserDTO = userService.findByLogin(commands[2]);
-            updateUserDTO.setLogin(getLoginUserFromCommand(messageDTO));
-            userService.update(updateUserDTO);
+    private void renameUserCommand(String[] commands, Message message, User user) {
+        if (checkAccessUser(message, user)) {
+            User updateUser = userService.findByLogin(commands[2]);
+            updateUser.setLogin(getLoginUserFromCommand(message));
+            userService.update(updateUser);
         }
     }
 
-    private void banUserCommand(MessageDTO messageDTO, User user) {
-        if (checkAccessUser(messageDTO, user)) {
-            UserDTO updateUserDTO = userService.findByLogin(getLoginUserFromCommand(messageDTO));
-            updateUserDTO.setBan(true);
-            updateUserDTO.setEndBanDate(LocalDateTime.now().plusMinutes(getMinutesBanUser(messageDTO)));
-            userService.update(updateUserDTO);
+    private void banUserCommand(Message message, User user) {
+        if (checkAccessUser(message, user)) {
+            User updateUser = userService.findByLogin(getLoginUserFromCommand(message));
+            updateUser.setBan(true);
+            updateUser.setEndBanDate(LocalDateTime.now().plusMinutes(getMinutesBanUser(message)));
+            userService.update(updateUser);
         }
     }
 
-    private void upAndDownRolesUser(String[] commands, MessageDTO messageDTO, User user) {
-        if (checkAccessUser(messageDTO, user)) {
-            UserDTO updateUserDTO = userService.findByLogin(commands[2]);
+    private void upAndDownRolesUser(String[] commands, Message message, User user) {
+        if (checkAccessUser(message, user)) {
+            User updateUser = userService.findByLogin(commands[2]);
             if (commands[3].equals("-n")) {
-                updateUserDTO.setRole(Role.MODERATOR.name());
+                updateUser.setRole(Role.MODERATOR);
             } else if (commands[3].equals("-d")) {
-                updateUserDTO.setRole(Role.USER.name());
+                updateUser.setRole(Role.USER);
             }
-            userService.update(updateUserDTO);
+            userService.update(updateUser);
         }
     }
 
     //TODO Работа с комнатами
     private void createRoomCommand(String[] commands, User user) {
-        RoomDTO roomDTO = new RoomDTO();
-        roomDTO.setName(commands[2]);
-        roomDTO.setUserId(user.getId());
-        roomDTO.setPrivateMassage(false);
-        List<UserDTO> userDTOS = new ArrayList<>();
+        Room room = new Room();
+        room.setName(commands[2]);
+        room.setUser(user);
+        room.setPrivateMassage(false);
+        List<User> userDTOS = new ArrayList<>();
         userDTOS.add(userService.getById(user.getId()));
-        roomDTO.setUsers(userDTOS);
-        roomService.save(roomDTO);
+        room.setUsers(userDTOS);
+        roomService.save(room);
     }
 
     private void removeRoomCommand(String[] commands, User user) {
         roomService.delete(roomRepository.findRoomByNameAndUserId(commands[2], user.getId()).getId());
     }
 
-    private void renameRoomCommand(String[] commands, MessageDTO messageDTO) {
-        RoomDTO roomDTO = roomService.findAllByName(roomRepository.findById(messageDTO.getRoomId())
+    private void renameRoomCommand(String[] commands, Message message) {
+        Room room = roomService.findAllByName(roomRepository.findById(message.getRoom().getId())
                 .orElseThrow(() -> new RuntimeException("Комната не найдена!")).getName());
-        roomDTO.setName(commands[2]);
-        roomService.update(roomDTO);
+        room.setName(commands[2]);
+        roomService.update(room);
     }
 
-    private void connectRoomCommand(String[] commands, MessageDTO messageDTO) {
-        RoomDTO roomDTO = roomService.findAllByName(commands[2]);
-        roomDTO.getUsers().add(userService.findByLogin(getLoginUserFromCommand(messageDTO)));
-        roomService.update(roomDTO);
+    private void connectRoomCommand(String[] commands, Message message) {
+        Room room = roomService.findAllByName(commands[2]);
+        room.getUsers().add(userService.findByLogin(getLoginUserFromCommand(message)));
+        roomService.update(room);
     }
 
-    private void disconnectRoomCommand(String[] commands, MessageDTO messageDTO) {
-        RoomDTO roomDTO = roomService.findAllByName(commands[2]);
-        roomDTO.getUsers().remove(userService.findByLogin(getLoginUserFromCommand(messageDTO)));
-        roomService.update(roomDTO);
+    private void disconnectRoomCommand(String[] commands, Message message) {
+        Room room = roomService.findAllByName(commands[2]);
+        room.getUsers().remove(userService.findByLogin(getLoginUserFromCommand(message)));
+        roomService.update(room);
     }
 }

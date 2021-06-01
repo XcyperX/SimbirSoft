@@ -1,6 +1,5 @@
 package com.simbir_soft.service.impl;
 
-import com.simbir_soft.Dto.UserDTO;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.UserRepository;
 import com.simbir_soft.service.UserService;
@@ -9,6 +8,7 @@ import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -17,49 +17,45 @@ public class UserServiceImpl implements UserService {
     private final MapperFacade mapperFacade;
 
     @Override
-    public UserDTO getById(Long id) {
+    public User getById(Long id) {
         if (userRepository.findById(id).isEmpty()) {
             throw new RuntimeException("Ошибка, нет такого пользователя!");
         }
-        return mapperFacade.map(userRepository.findById(id).get(), UserDTO.class);
+        return userRepository.findById(id).get();
     }
 
     @Override
-    public UserDTO save(UserDTO userDTO) {
-        if (userDTO != null) {
-            User user = userRepository.save(mapperFacade.map(userDTO, User.class));
-            return mapperFacade.map(user, UserDTO.class);
+    public User save(User user) {
+        if (Objects.isNull(user)) {
+            throw new RuntimeException("Ошибка, нет данных пользователя!");
         }
-        return null;
+        return userRepository.save(user);
     }
 
     @Override
-    public UserDTO update(UserDTO userDTO) {
-        if (userRepository.findById(userDTO.getId()).isEmpty()) {
+    public User update(User user) {
+        if (userRepository.findById(user.getId()).isEmpty()) {
             throw new RuntimeException("Ошибка, нет такого пользователя!");
         }
-        User user = userRepository.save(mapperFacade.map(userDTO, User.class));
-        return mapperFacade.map(user, UserDTO.class);
+        return userRepository.save(user);
     }
 
     @Override
     public void delete(Long id) {
-        if (userRepository.findById(id).isEmpty()) {
-            throw new RuntimeException("Ошибка, нет такого пользователя!");
-        }
+        getById(id);
         userRepository.deleteById(id);
     }
 
     @Override
-    public List<UserDTO> findAll() {
-        return mapperFacade.mapAsList(userRepository.findAll(), UserDTO.class);
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     @Override
-    public UserDTO findByLogin(String login) {
+    public User findByLogin(String login) {
         if (userRepository.findByLogin(login).isEmpty()) {
             throw new RuntimeException("Ошибка, нет такого пользователя!");
         }
-        return mapperFacade.map(userRepository.findByLogin(login).get(), UserDTO.class);
+        return userRepository.findByLogin(login).get();
     }
 }

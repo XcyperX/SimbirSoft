@@ -9,7 +9,7 @@ public enum Role implements GrantedAuthority, Serializable {
     MODERATOR("Модератор"),
     USER("Пользователь");
 
-    private String role;
+    private final String role;
 
     Role(String role) {
         this.role = role;

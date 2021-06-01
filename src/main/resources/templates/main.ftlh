@@ -35,11 +35,11 @@
                 <div class="msg_history" id="msg_history">
                     <#if messages?has_content>
                         <#list messages as message>
-                        <#if message.userId != user.id>
+                        <#if message.user.id != user.id>
                             <div class="incoming_msg">
                                 <div class="received_msg">
                                     <div class="received_withd_msg">
-                                        <h6>${message.userName}</h6>
+                                        <h6>${message.user.login}</h6>
                                         <p>${message.text}</p>
                                         <span class="time_date"> ${message.date}</span></div>
                                 </div>
@@ -56,10 +56,10 @@
                     </#if>
                 </div>
                 <div class="type_msg">
-                    <div class="input_msg_write">
-                        <input type="text" class="write_msg" id="write_msg" placeholder="Введите сообщение" />
-                        <button class="msg_send_btn" type="button" onclick="sendNewMessage(<#if roomId?has_content && user?has_content>${roomId}, ${user.id}</#if>)"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-                    </div>
+                        <div class="input_msg_write">
+                            <input type="text" class="write_msg" id="write_msg" name="write_msg" placeholder="Введите сообщение" />
+                            <button class="msg_send_btn" type="button" onclick="sendNewMessage(<#if roomId?has_content && user?has_content>${roomId}, ${user.id}</#if>)"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                        </div>
                 </div>
             </div>
             <script type="text/javascript">

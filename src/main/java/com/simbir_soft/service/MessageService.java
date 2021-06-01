@@ -1,10 +1,11 @@
 package com.simbir_soft.service;
 
-import com.simbir_soft.Dto.MessageDTO;
+
+import com.simbir_soft.model.Message;
 
 import java.util.List;
 
-public interface MessageService extends CRUDService<MessageDTO, Long> {
-    List<MessageDTO> findAll();
-    void command(MessageDTO messageDTO);
+public interface MessageService extends CRUDService<Message, Long> {
+    List<Message> findAll();
+    void command(Message messageDTO);
 }

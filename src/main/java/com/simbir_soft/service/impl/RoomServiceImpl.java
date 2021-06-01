@@ -1,6 +1,5 @@
 package com.simbir_soft.service.impl;
 
-import com.simbir_soft.Dto.RoomDTO;
 import com.simbir_soft.model.Room;
 import com.simbir_soft.repository.RoomRepository;
 import com.simbir_soft.service.RoomService;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -18,46 +18,38 @@ public class RoomServiceImpl implements RoomService {
     private final MapperFacade mapperFacade;
 
     @Override
-    public RoomDTO getById(Long id) {
-        if (roomRepository.findById(id).isEmpty()) {
-            throw new RuntimeException("Ошибка, нет такой комнаты!");
-        }
-        return mapperFacade.map(roomRepository.findById(id).get(), RoomDTO.class);
+    public Room getById(Long id) {
+        return roomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ошибка, нет такой комнаты!"));
     }
 
     @Override
-    public RoomDTO save(RoomDTO roomDTO) {
-        if (roomDTO != null) {
-            Room room = roomRepository.save(mapperFacade.map(roomDTO, Room.class));
-            return mapperFacade.map(room, RoomDTO.class);
+    public Room save(Room room) {
+        if (Objects.isNull(room)) {
+            throw new RuntimeException("Нет данных по комнате");
         }
-        return null;
+        return roomRepository.save(room);
     }
 
     @Override
-    public RoomDTO update(RoomDTO roomDTO) {
-        if (roomRepository.findById(roomDTO.getId()).isEmpty()) {
-            throw new RuntimeException("Ошибка, нет такой комнаты!");
-        }
-        Room room = roomRepository.save(mapperFacade.map(roomDTO, Room.class));
-        return mapperFacade.map(room, RoomDTO.class);
+    public Room update(Room room) {
+        getById(room.getId());
+        return roomRepository.save(room);
     }
 
     @Override
     public void delete(Long id) {
-        if (roomRepository.findById(id).isEmpty()) {
-            throw new RuntimeException("Ошибка, нет такой комнаты!");
-        }
+        getById(id);
         roomRepository.deleteById(id);
     }
 
     @Override
-    public List<RoomDTO> findAll() {
-        return mapperFacade.mapAsList(roomRepository.findAll(), RoomDTO.class);
+    public List<Room> findAll() {
+        return roomRepository.findAll();
     }
 
     @Override
-    public List<RoomDTO> findAllByUserId(Long id) {
+    public List<Room> findAllByUserId(Long id) {
         List<Room> rooms = new ArrayList<>();
         roomRepository.findAll().forEach(room -> {
             if (room.getUser().getId().equals(id)) {
@@ -70,11 +62,11 @@ public class RoomServiceImpl implements RoomService {
                 });
             }
         });
-        return mapperFacade.mapAsList(rooms, RoomDTO.class);
+        return rooms;
     }
 
     @Override
-    public RoomDTO findAllByName(String name) {
-        return mapperFacade.map(roomRepository.findRoomByName(name), RoomDTO.class);
+    public Room findAllByName(String name) {
+        return roomRepository.findRoomByName(name);
     }
 }

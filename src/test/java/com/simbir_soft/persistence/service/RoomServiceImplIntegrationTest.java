@@ -1,6 +1,5 @@
 package com.simbir_soft.persistence.service;
 
-import com.simbir_soft.Dto.RoomDTO;
 import com.simbir_soft.model.Room;
 import com.simbir_soft.repository.RoomRepository;
 import com.simbir_soft.service.RoomService;
@@ -51,21 +50,21 @@ public class RoomServiceImplIntegrationTest {
 
     @Test
     public void whenValidName_thenUserShouldBeFound() {
-        RoomDTO found = roomService.findAllByName(ROOM_ONE);
+        Room found = roomService.findAllByName(ROOM_ONE);
 
         assertThat(found.getName()).isEqualTo(ROOM_ONE);
     }
 
     @Test
     public void whenValidId_thenUserShouldBeFound() {
-        RoomDTO found = roomService.getById(ID);
+        Room found = roomService.getById(ID);
 
         assertThat(found.getName()).isEqualTo(ROOM_ONE);
     }
 
     @Test
     public void whenValidAllUsers_thenUserShouldBeFound() {
-        List<RoomDTO> userDTOS = roomService.findAll();
+        List<Room> userDTOS = roomService.findAll();
 
         assertThat(userDTOS.size()).isEqualTo(3);
     }
@@ -76,7 +75,7 @@ public class RoomServiceImplIntegrationTest {
         Room room2 = new Room(ROOM_TWO);
         Room room3 = new Room(ROOM_THREE);
 
-        List<RoomDTO> userDTOS = roomService.findAll();
-        assertThat(userDTOS).hasSize(3).extracting(RoomDTO::getName).contains(room1.getName(), room2.getName(), room3.getName());
+        List<Room> userDTOS = roomService.findAll();
+        assertThat(userDTOS).hasSize(3).extracting(Room::getName).contains(room1.getName(), room2.getName(), room3.getName());
     }
 }
