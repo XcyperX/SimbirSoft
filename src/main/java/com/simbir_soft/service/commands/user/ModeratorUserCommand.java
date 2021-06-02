@@ -5,7 +5,6 @@ import com.simbir_soft.model.Role;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.UserRepository;
 import com.simbir_soft.service.CheckServiceByCommand;
-import com.simbir_soft.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +16,8 @@ public class ModeratorUserCommand implements CheckServiceByCommand {
     private static final String MODERATOR = "moderator";
 
     @Override
-    public Boolean checkCommand(String command) {
-        return command.equals(MODERATOR);
+    public Boolean checkCommand(String[] command) {
+        return command[1].equals(MODERATOR);
     }
 
     @Override

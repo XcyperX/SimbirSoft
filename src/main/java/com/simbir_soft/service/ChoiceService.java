@@ -1,9 +1,6 @@
 package com.simbir_soft.service;
 
 import com.simbir_soft.model.Message;
-import com.simbir_soft.service.impl.MessageServiceImpl;
-import com.simbir_soft.service.impl.RoomServiceImpl;
-import com.simbir_soft.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +16,7 @@ public class ChoiceService {
         List<CheckServiceByCommand> checkServiceByCommands = List.of(userService, roomService);
 
         checkServiceByCommands.forEach(service -> {
-            if (service.checkCommand(message.getText().split(" ")[0])) {
+            if (service.checkCommand(message.getText().split(" "))) {
                 service.applyService(message);
             }
         });

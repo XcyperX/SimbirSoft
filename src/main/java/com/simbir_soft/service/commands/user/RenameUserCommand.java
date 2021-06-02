@@ -4,7 +4,6 @@ import com.simbir_soft.model.Message;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.UserRepository;
 import com.simbir_soft.service.CheckServiceByCommand;
-import com.simbir_soft.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +12,12 @@ import org.springframework.stereotype.Service;
 public class RenameUserCommand implements CheckServiceByCommand {
     private final UserRepository userRepository;
 
+    private static final String USER = "//user";
     private static final String RENAME = "rename";
 
     @Override
-    public Boolean checkCommand(String command) {
-        return command.equals(RENAME);
+    public Boolean checkCommand(String[] command) {
+        return command[0].equals(USER) && command[1].equals(RENAME);
     }
 
     @Override

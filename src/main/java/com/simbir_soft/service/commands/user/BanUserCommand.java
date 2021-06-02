@@ -4,7 +4,6 @@ import com.simbir_soft.model.Message;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.UserRepository;
 import com.simbir_soft.service.CheckServiceByCommand;
-import com.simbir_soft.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,8 @@ public class BanUserCommand implements CheckServiceByCommand {
     private static final String BAN = "ban";
 
     @Override
-    public Boolean checkCommand(String command) {
-        return command.equals(BAN);
+    public Boolean checkCommand(String[] command) {
+        return command[1].equals(BAN);
     }
 
     @Override

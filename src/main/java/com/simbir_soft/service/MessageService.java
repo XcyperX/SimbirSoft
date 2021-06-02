@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface MessageService extends CRUDService<Message, Long> {
     List<Message> findAll();
-    void command(Message messageDTO);
 }
