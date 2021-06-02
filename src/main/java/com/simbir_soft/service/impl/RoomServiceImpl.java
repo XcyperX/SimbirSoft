@@ -3,8 +3,8 @@ package com.simbir_soft.service.impl;
 import com.simbir_soft.model.Message;
 import com.simbir_soft.model.Room;
 import com.simbir_soft.repository.RoomRepository;
-import com.simbir_soft.service.CheckServiceByCommand;
 import com.simbir_soft.service.RoomService;
+import com.simbir_soft.service.commands.ChoiceCommands;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
@@ -18,18 +18,19 @@ import java.util.Objects;
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final MapperFacade mapperFacade;
+    private final ChoiceCommands choiceCommands;
 
     private static final String ROOM = "//room";
 
     @Override
-    public Boolean checkCommand(String command) {
+    public Boolean checkCommand(String[] command) {
 
-        return command.equals(ROOM);
+        return command[0].equals(ROOM);
     }
 
     @Override
     public void applyService(Message message) {
-        System.out.println("Room");
+        choiceCommands.checkCommand(message);
     }
 
     @Override
