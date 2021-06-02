@@ -2,6 +2,7 @@ package com.simbir_soft.controller;
 
 import com.simbir_soft.dto.MessageDTO;
 import com.simbir_soft.model.Message;
+import com.simbir_soft.service.ChoiceService;
 import com.simbir_soft.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
@@ -15,17 +16,19 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MessageApiController {
     private final MessageService messageService;
+    private final ChoiceService choiceService;
 
     private final MapperFacade mapper;
 
     @PostMapping("/message")
     public void createMessage(@RequestBody @Valid MessageDTO messageDTO) {
-        if (messageDTO.getText().split(" ")[0].contains("//")) {
-            messageService.command(mapper.map(messageDTO, Message.class));
-        }
-        if (messageDTO.getUser().getId() != null) {
-            messageService.save(mapper.map(messageDTO, Message.class));
-        }
+        choiceService.run(mapper.map(messageDTO, Message.class));
+//        if (messageDTO.getText().split(" ")[0].contains("//")) {
+//            messageService.command(mapper.map(messageDTO, Message.class));
+//        }
+//        if (messageDTO.getUser().getId() != null) {
+//            messageService.save(mapper.map(messageDTO, Message.class));
+//        }
     }
 
     @PutMapping("/message/{id}")
