@@ -22,13 +22,12 @@ public class MessageApiController {
 
     @PostMapping("/message")
     public void createMessage(@RequestBody @Valid MessageDTO messageDTO) {
-        choiceService.run(mapper.map(messageDTO, Message.class));
-//        if (messageDTO.getText().split(" ")[0].contains("//")) {
-//            messageService.command(mapper.map(messageDTO, Message.class));
-//        }
-//        if (messageDTO.getUser().getId() != null) {
-//            messageService.save(mapper.map(messageDTO, Message.class));
-//        }
+        if (messageDTO.getText().split(" ")[0].contains("//")) {
+            choiceService.run(mapper.map(messageDTO, Message.class));
+        }
+        if (messageDTO.getUser().getId() != null) {
+            messageService.save(mapper.map(messageDTO, Message.class));
+        }
     }
 
     @PutMapping("/message/{id}")
