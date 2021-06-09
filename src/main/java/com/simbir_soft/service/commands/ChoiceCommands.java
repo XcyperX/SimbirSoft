@@ -61,9 +61,8 @@ public class ChoiceCommands {
 
     private Boolean checkAccessUser(Message message, User user) {
         if (message.getRoom() != null) {
-            return roomRepository.findById(message.getRoom().getId()).orElseThrow().getUser().getId().equals(user.getId()) ||
-                    user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR);
+            return roomRepository.findById(message.getRoom().getId()).orElseThrow().getUser().getId().equals(user.getId());
         }
-        return user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR);
+        return true;
     }
 }

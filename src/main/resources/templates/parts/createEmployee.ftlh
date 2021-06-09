@@ -15,24 +15,6 @@
                            value="<#if employees?has_content && employees.password?has_content>${employees.password}</#if>">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group col">
-                    <label class="custom-label">Выберите пол</label>
-                    <select id="role" class="form-control">
-                        <#list roles?values as role>
-                            <#if users?has_content>
-                                <#if roles.getNameGender() == users.role>
-                                    <option value="${role}" selected>${role.getNameRole()}</option>
-                                <#else>
-                                    <option value="${role}">${role.getNameRole()}</option>
-                                </#if>
-                                <#else>
-                                    <option value="${role}">${role.getNameRole()}</option>
-                            </#if>
-                        </#list>
-                    </select>
-                </div>
-        </div>
         </form>
     </div>
 </div>

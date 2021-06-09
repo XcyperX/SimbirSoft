@@ -1,35 +1,38 @@
 package com.simbir_soft.model;
 
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serializable;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public enum Role implements GrantedAuthority, Serializable {
-    ADMIN("Администратор"),
-    MODERATOR("Модератор"),
-    USER("Пользователь");
+public enum Role implements Serializable {
+    ADMIN(Set.of(Permission.ADMIN, Permission.BAN_USER, Permission.MAKE_MODERATOR, Permission.SEND_MESSAGE,
+            Permission.DELETE_MESSAGE, Permission.CREATE_ROOM, Permission.CONNECT_USER, Permission.DISCONNECT_USER,
+            Permission.RENAME_ROOM)),
 
-    private final String role;
+    MODERATOR(Set.of(Permission.MODERATOR, Permission.BAN_USER, Permission.SEND_MESSAGE,
+            Permission.DELETE_MESSAGE, Permission.CREATE_ROOM, Permission.CONNECT_USER)),
 
-    Role(String role) {
-        this.role = role;
+    USER(Set.of(Permission.USER, Permission.SEND_MESSAGE, Permission.CREATE_ROOM,
+            Permission.CONNECT_USER, Permission.DISCONNECT_USER,
+            Permission.RENAME_ROOM));
+
+    private final Set<Permission> permissions;
+
+    Role(Set<Permission> permissions) {
+        this.permissions = permissions;
     }
 
-    public String getNameRole() {
-        return role;
+    public Set<Permission> getPermissions() {
+        return permissions;
     }
 
-    @Override
-    public String getAuthority() {
-        return name();
+    public Set<SimpleGrantedAuthority> getAuthority() {
+        return getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority((permission.getPermission())))
+                .collect(Collectors.toSet());
     }
 
-    public static String getById(Long id) {
-        for (Role role : values()) {
-            if (role.ordinal() == id) {
-                return role.getNameRole();
-            }
-        }
-        return "UNKNOWN";
-    }
+
 }

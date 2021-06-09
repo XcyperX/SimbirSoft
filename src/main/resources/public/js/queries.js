@@ -15,7 +15,7 @@ submitNewUser = (elem) => {
     let data = elem.parentNode.parentNode;
     user.login = data.querySelector("#login").value;
     user.password = data.querySelector("#password").value;
-    user.role = data.querySelector("#role").value;
+    user.role = "USER";
     console.log(user);
     createNewUser(user);
 }

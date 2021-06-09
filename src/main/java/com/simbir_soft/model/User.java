@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -30,6 +29,7 @@ public class User implements UserDetails, Serializable {
 
     private Boolean ban;
 
+    @Column(name = "end_ban_date")
     private LocalDateTime endBanDate;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -60,29 +60,36 @@ public class User implements UserDetails, Serializable {
     }
 
     public String getUserRole() {
-        return role.getNameRole();
+        for (Permission nameRole : role.getPermissions()) {
+            if (nameRole.equals(Permission.ADMIN) ||
+                    nameRole.equals(Permission.MODERATOR) ||
+                    nameRole.equals(Permission.USER)) {
+                return nameRole.getPermission();
+            }
+        }
+        return "None";
     }
 
     public Boolean isAdmin() {
-        return role.name().contains("ADMIN");
+        return role.getPermissions().contains(Permission.ADMIN);
     }
 
     public Boolean isModerator() {
-        return role.name().contains("MODERATOR");
+        return role.getPermissions().contains(Permission.MODERATOR);
     }
 
     public Boolean isUser() {
-        return role.name().contains("USER");
+        return role.getPermissions().contains(Permission.USER);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(getRole());
+        return role.getAuthority();
     }
 
     @Override
     public String getUsername() {
-        return getLogin();
+        return login;
     }
 
     @Override

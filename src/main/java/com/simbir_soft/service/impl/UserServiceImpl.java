@@ -7,6 +7,8 @@ import com.simbir_soft.service.UserService;
 import com.simbir_soft.service.commands.ChoiceCommands;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final MapperFacade mapperFacade;
     private final ChoiceCommands choiceCommands;
 
     private static final String USER = "//user";
@@ -43,9 +44,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
         if (Objects.isNull(user)) {
             throw new RuntimeException("Ошибка, нет данных пользователя!");
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
