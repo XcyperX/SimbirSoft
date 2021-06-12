@@ -1,4 +1,16 @@
 databaseChangeLog:
+#  - changeSet:
+#      id: 7
+#      author: Ananev_artem
+#      rollback:
+#        - delete:
+#            tableName: users
+#        - delete:
+#            tableName: rooms
+#        - delete:
+#            tableName: message
+#        - delete:
+#            tableName: user_room
   - changeSet:
       id: 1
       author: Ananev_artem
@@ -36,7 +48,7 @@ databaseChangeLog:
                   name: endBanDate
                   type: date
   - changeSet:
-      id: 2
+      id: 8
       author: Ananev_artem
       changes:
         - createTable:
@@ -53,7 +65,7 @@ databaseChangeLog:
                   name: name
                   type: varchar(255)
                   constraints:
-                    unique: true
+                    unique: false
                     nullable: false
               - column:
                   name: privateMassage
@@ -140,7 +152,3 @@ databaseChangeLog:
               - column:
                   name: role
                   value: "ADMIN"
-#      rollback:
-#        - delete:
-#            tableName: users
-#            where: login in ('admin')

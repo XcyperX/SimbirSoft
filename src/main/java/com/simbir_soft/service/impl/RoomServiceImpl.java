@@ -2,6 +2,7 @@ package com.simbir_soft.service.impl;
 
 import com.simbir_soft.model.Message;
 import com.simbir_soft.model.Room;
+import com.simbir_soft.model.User;
 import com.simbir_soft.repository.RoomRepository;
 import com.simbir_soft.service.RoomService;
 import com.simbir_soft.service.commands.ChoiceCommands;
