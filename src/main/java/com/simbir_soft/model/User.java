@@ -36,7 +36,7 @@ public class User implements UserDetails, Serializable {
     @JoinTable(name = "user_room", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "room_id")})
     private List<Room> rooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
     public User() {
@@ -110,5 +110,19 @@ public class User implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", ban=" + ban +
+                ", endBanDate=" + endBanDate +
+                ", rooms=" + rooms +
+                ", messages=" + messages +
+                '}';
     }
 }

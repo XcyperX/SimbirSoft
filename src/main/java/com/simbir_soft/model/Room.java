@@ -1,6 +1,7 @@
 package com.simbir_soft.model;
 
 import lombok.Data;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,20 +16,20 @@ public class Room implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(unique = true)
+    @Column(unique = true)
     private String name;
 
     private Boolean privateMassage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_room", joinColumns = {@JoinColumn(name = "room_id")}, inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private List<User> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
     public Room() {
@@ -45,5 +46,17 @@ public class Room implements Serializable {
     public Room(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", privateMassage=" + privateMassage +
+                ", user=" + user +
+                ", users=" + users +
+                ", messages=" + messages +
+                '}';
     }
 }

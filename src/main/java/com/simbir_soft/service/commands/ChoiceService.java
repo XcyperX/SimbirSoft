@@ -1,6 +1,7 @@
-package com.simbir_soft.service.commands.threads;
+package com.simbir_soft.service.commands;
 
 import com.simbir_soft.model.Message;
+import com.simbir_soft.model.User;
 import com.simbir_soft.service.CheckServiceByCommand;
 import com.simbir_soft.service.RoomService;
 import com.simbir_soft.service.UserService;
@@ -15,12 +16,12 @@ public class ChoiceService {
     private final RoomService roomService;
     private final UserService userService;
 
-    public void checkMessage(Message message) {
+    public synchronized void checkMessage(Message message, User user) {
         List<CheckServiceByCommand> checkServiceByCommands = List.of(userService, roomService);
 
         checkServiceByCommands.forEach(service -> {
             if (service.checkCommand(message.getText().split(" "))) {
-                service.applyService(message);
+                service.applyService(message, user);
             }
         });
     }

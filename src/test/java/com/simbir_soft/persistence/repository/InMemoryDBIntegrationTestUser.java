@@ -43,7 +43,7 @@ public class InMemoryDBIntegrationTestUser {
         User user = new User(ID, NAME);
         User userSave = userRepository.save(user);
 
-        User saveUser = userRepository.findById(userSave.getId()).get();
+        User saveUser = userRepository.findById(userSave.getId()).orElseThrow(() -> new RuntimeException());
         assertEquals(saveUser.getLogin(), NAME, INCORRECT_LOGIN);
     }
 

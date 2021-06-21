@@ -1,10 +1,8 @@
 package com.simbir_soft.service.commands;
 
 import com.simbir_soft.model.Message;
-import com.simbir_soft.model.Role;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.RoomRepository;
-import com.simbir_soft.security.SecurityUtils;
 import com.simbir_soft.service.CheckServiceByCommand;
 import com.simbir_soft.service.commands.room.*;
 import com.simbir_soft.service.commands.user.BanUserCommand;
@@ -16,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,17 +33,11 @@ public class ChoiceCommands {
     private final FindYbotCommand findYbotCommand;
     private final HelpYbotCommand helpYbotCommand;
 
-    public void checkCommand(Message message) {
-        User user = SecurityUtils.getUserFromContext();
-        if (Objects.isNull(user)) {
-            throw new RuntimeException("Пользователь не авторизирован!");
-        }
-        if (checkAccessUser(message, user)) {
-            choiceUserCommand(message);
-        }
+    public void checkCommand(Message message, User user) {
+        choiceUserCommand(message, user);
     }
 
-    private void choiceUserCommand(Message message) {
+    private void choiceUserCommand(Message message, User user) {
         String[] action = message.getText().split(" ");
         List<CheckServiceByCommand> checkUserCommands = List.of(banUserCommand, moderatorUserCommand, renameUserCommand,
                 connectRoomCommand, createRoomCommand, disconnectRoomCommand,
@@ -54,15 +45,16 @@ public class ChoiceCommands {
 
         checkUserCommands.forEach(commands -> {
             if (commands.checkCommand(action)) {
-                commands.applyService(message);
+                commands.applyService(message, user);
             }
         });
     }
 
-    private Boolean checkAccessUser(Message message, User user) {
-        if (message.getRoom() != null) {
-            return roomRepository.findById(message.getRoom().getId()).orElseThrow().getUser().getId().equals(user.getId());
-        }
-        return true;
-    }
+//    private Boolean checkAccessUser(Message message, User user) {
+//        if (message.getRoom() != null) {
+//            return roomRepository.findById(message.getRoom().getId()).orElseThrow().getUser().getId().equals(user.getId());
+//        } else {
+//            return user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR);
+//        }
+//    }
 }

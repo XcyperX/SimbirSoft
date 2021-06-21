@@ -22,7 +22,7 @@ public class BanUserCommand implements CheckServiceByCommand {
     }
 
     @Override
-    public void applyService(Message message) {
+    public void applyService(Message message, User user) {
         User updateUser = userRepository.findByLogin(getLoginUserFromCommand(message)).get();
         updateUser.setBan(true);
         updateUser.setEndBanDate(LocalDateTime.now().plusMinutes(getMinutesBanUser(message)));

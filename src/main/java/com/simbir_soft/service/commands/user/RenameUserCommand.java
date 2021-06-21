@@ -21,7 +21,7 @@ public class RenameUserCommand implements CheckServiceByCommand {
     }
 
     @Override
-    public void applyService(Message message) {
+    public void applyService(Message message, User user) {
         String[] commands = message.getText().split(" ");
         User updateUser = userRepository.findByLogin(commands[2]).get();
         updateUser.setLogin(getLoginUserFromCommand(message));

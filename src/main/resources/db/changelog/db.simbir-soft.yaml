@@ -65,7 +65,7 @@ databaseChangeLog:
                   name: name
                   type: varchar(255)
                   constraints:
-                    unique: false
+                    unique: true
                     nullable: false
               - column:
                   name: privateMassage

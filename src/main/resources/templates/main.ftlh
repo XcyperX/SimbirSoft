@@ -8,7 +8,7 @@
             <div class="inbox_people">
                 <div class="headind_srch">
                     <div class="recent_heading">
-                        <h4>Диологи</h4>
+                        <h4>Диалоги</h4>
                     </div>
                 </div>
                 <div class="inbox_chat">

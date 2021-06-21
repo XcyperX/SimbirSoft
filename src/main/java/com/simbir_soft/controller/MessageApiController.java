@@ -3,18 +3,19 @@ package com.simbir_soft.controller;
 import com.simbir_soft.dto.MessageDTO;
 import com.simbir_soft.model.Message;
 import com.simbir_soft.model.User;
-import com.simbir_soft.security.SecurityUtils;
-import com.simbir_soft.service.commands.threads.*;
+import com.simbir_soft.service.commands.ChoiceService;
 import com.simbir_soft.service.MessageService;
+import com.simbir_soft.service.commands.proxy.CommandInvocationHandler;
+import com.simbir_soft.service.commands.proxy.ProxyFactory;
+import com.simbir_soft.service.commands.thread.MyMonitorThread;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/api")
@@ -25,32 +26,18 @@ public class MessageApiController {
 
     private final MapperFacade mapper;
 
-    private final MonitorForCommands monitor;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private MyMonitorThread myMonitorThread;
 
     @PostConstruct
-    void startCheck() {
-        StartCommandInQueue startCommandInQueue = new StartCommandInQueue(monitor);
-        new Thread(startCommandInQueue).start();
+    private void startMonitor() throws InterruptedException {
+        myMonitorThread = new MyMonitorThread();
     }
 
+
     @PostMapping("/message")
-    public void createMessage(@RequestBody @Valid MessageDTO messageDTO) {
-//        User user = SecurityUtils.getUserFromContext();
-//        if (messageDTO.getText().split(" ")[0].contains("//")) {
-//            AddCommandInQueue addCommandInQueue = new AddCommandInQueue(mapper.map(messageDTO, Message.class), monitor, user);
-//            new Thread(addCommandInQueue).start();
-//        }
-        if (messageDTO.getText().split(" ")[0].contains("//")) {
-            executorService.submit(() -> {
-                choiceService.checkMessage(mapper.map(messageDTO, Message.class));
-            });
-//            Thread thread = new Thread(new CheckThread(choiceService, mapper.map(messageDTO, Message.class)));
-//            executorService.submit(thread);
-        }
-        if (messageDTO.getUser().getId() != null) {
-            messageService.save(mapper.map(messageDTO, Message.class));
-        }
+    public void createMessage(@AuthenticationPrincipal User user, @RequestBody @Valid MessageDTO messageDTO) {
+        Message message = mapper.map(messageDTO, Message.class);
+        ProxyFactory.newInstance(messageService, new CommandInvocationHandler(message, user, choiceService, messageService, myMonitorThread)).save(message);
     }
 
     @PutMapping("/message/{id}")

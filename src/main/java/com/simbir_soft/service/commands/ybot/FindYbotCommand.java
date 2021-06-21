@@ -1,6 +1,7 @@
 package com.simbir_soft.service.commands.ybot;
 
 import com.simbir_soft.model.Message;
+import com.simbir_soft.model.User;
 import com.simbir_soft.service.CheckServiceByCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class FindYbotCommand implements CheckServiceByCommand {
     }
 
     @Override
-    public void applyService(Message entity) {
+    public void applyService(Message entity, User user) {
         System.out.println("yBot find");
     }
 }

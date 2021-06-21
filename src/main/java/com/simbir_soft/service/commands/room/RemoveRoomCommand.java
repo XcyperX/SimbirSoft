@@ -1,9 +1,10 @@
 package com.simbir_soft.service.commands.room;
 
 import com.simbir_soft.model.Message;
+import com.simbir_soft.model.Role;
+import com.simbir_soft.model.Room;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.RoomRepository;
-import com.simbir_soft.security.SecurityUtils;
 import com.simbir_soft.service.CheckServiceByCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,22 @@ public class RemoveRoomCommand implements CheckServiceByCommand {
     }
 
     @Override
-    public void applyService(Message message) {
-        User user = SecurityUtils.getUserFromContext();
+    public void applyService(Message message, User user) {
         if (Objects.isNull(user)) {
             throw new RuntimeException("Пользователь не авторизирован!");
         }
         String[] commands = message.getText().split(" ");
-        roomRepository.deleteById(roomRepository.findRoomByNameAndUserId(commands[2], user.getId()).getId());
+        Room room = roomRepository.findRoomByNameAndUserId(commands[2], user.getId());
+        checkAccess(room, user);
+        roomRepository.deleteById(room.getId());
+    }
+
+    private void checkAccess(Room room, User user) {
+        if (Objects.isNull(user)) {
+            throw new RuntimeException("Пользователь не авторизирован!");
+        }
+        if (!room.getUser().getId().equals(user.getId()) || !user.getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("У пользователя недостаточно прав!");
+        }
     }
 }

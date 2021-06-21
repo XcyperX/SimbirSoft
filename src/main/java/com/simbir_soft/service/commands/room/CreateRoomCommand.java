@@ -4,16 +4,17 @@ import com.simbir_soft.model.Message;
 import com.simbir_soft.model.Room;
 import com.simbir_soft.model.User;
 import com.simbir_soft.repository.RoomRepository;
-import com.simbir_soft.security.SecurityUtils;
 import com.simbir_soft.service.CheckServiceByCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CreateRoomCommand implements CheckServiceByCommand {
     private final RoomRepository roomRepository;
@@ -26,8 +27,7 @@ public class CreateRoomCommand implements CheckServiceByCommand {
     }
 
     @Override
-    public void applyService(Message message) {
-        User user = SecurityUtils.getUserFromContext();
+    public void applyService(Message message, User user) {
         if (Objects.isNull(user)) {
             throw new RuntimeException("Пользователь не авторизирован!");
         }
@@ -37,7 +37,7 @@ public class CreateRoomCommand implements CheckServiceByCommand {
         room.setUser(user);
         room.setPrivateMassage(false);
         List<User> userDTOS = new ArrayList<>();
-        userDTOS.add(new User(user.getId()));
+        userDTOS.add(user);
         room.setUsers(userDTOS);
         roomRepository.save(room);
     }

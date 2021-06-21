@@ -30,8 +30,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void applyService(Message message) {
-        choiceCommands.checkCommand(message);
+    public void applyService(Message message, User user) {
+        choiceCommands.checkCommand(message, user);
     }
 
     @Override

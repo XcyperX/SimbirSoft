@@ -5,5 +5,5 @@ import com.simbir_soft.model.User;
 
 public interface CheckServiceByCommand {
     Boolean checkCommand(String[] command);
-    void applyService(Message message);
+    void applyService(Message message, User user);
 }
